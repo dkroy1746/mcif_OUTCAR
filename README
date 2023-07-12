@@ -1,0 +1,5 @@
+Welcome to mcif_OUTCAR program for VASP. It converts OUTCAR and POSCAR files of a VASP calculation into a visualizable magnetic structure file i.e. mcif file. mcif file can be visualised in VESTA, Fullprof,expo etc. 
+1. I need POSCAR and OUTCAR.
+2. Make sure the POSCAR is in fractional coordinates.
+3. Use zmcif.sh for spin-polarized only calculations
+4. mcif_outcar.sh  for non-collinear calculations.
