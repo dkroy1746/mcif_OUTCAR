@@ -1,6 +1,5 @@
 #!/bin/bash
 
-echo -e "Welcome to outcar_to_mcif program for VASP.\n1. I need POSCAR and OUTCAR.\n2. Make sure the POSCAR is in fractional coordinates.\n3. Use zmcif.sh for spin-polarized only calculation and outcar_mcif.sh   for non-collinear calculations.\n"
 
 no_of_species=$(awk ' {if ( NR == 6 )  print NF }' POSCAR)        # To find the type and total no. of species or elements
 echo "The no. of species is : "$no_of_species
@@ -14,8 +13,6 @@ echo -e "_cell_length_a\t\t $(awk -v m=$scl 'NR==3 {print  m*sqrt($1^2+$2^2+$3^2
 echo -e "_cell_length_b\t\t $(awk -v m=$scl 'NR==4 {print  m*sqrt($1^2+$2^2+$3^2)}' POSCAR|bc -l)">>POSCAR.mcif
 echo -e "_cell_length_c\t\t $(awk -v m=$scl 'NR==5 {print  m*sqrt($1^2+$2^2+$3^2)}' POSCAR|bc -l)">>POSCAR.mcif
 
-
-# To find alpha, beta, gamma
 a1=$(awk 'NR==3{print $1}' POSCAR)
 a2=$(awk 'NR==3{print $2}' POSCAR)
 a3=$(awk 'NR==3{print $3}' POSCAR)
@@ -57,7 +54,7 @@ echo -e "_cell_angle_alpha\t\t $alpha">> POSCAR.mcif
 echo -e "_cell_angle_beta\t\t $beta">> POSCAR.mcif
 echo -e "_cell_angle_gamma\t\t $gamma">> POSCAR.mcif
 
-## Entering x,y,z coordinates in fractions
+
 echo -e "\nloop_
 _atom_site_label
 _atom_site_fract_x
@@ -83,8 +80,8 @@ do
 done
 
 echo "NION= " $NION
-offst1=$((($NION*2)+21))            # offset or the region to look for in OUTCAR
-offst2=$(($offst1-$NION-9))
+offst1=$(($NION+7))          # offset or the region to look for in OUTCAR
+#offst2=$(($offst1-$NION-9))
 #echo "Offset1  " $offst1
 #echo "Offset2  " $offst2
 
@@ -117,7 +114,7 @@ done
 tot_mag_ion=$(($tot_mag_ion-1))                     #to correct for the 0 entered by user
 
 
-grep -A$offst1 "aborting loop" OUTCAR |tail -$offst1|grep -A$offst2  "magnetization" > temp.txt   # to create a file with required magnetization of last iteration
+tac OUTCAR | grep -m1 -B$offst1 "magnetization" | tac >  temp.txt   # to create a file with required magnetization of last iteration
 
 last_col=$(grep -w -m1 "1 " temp.txt |awk ' END{print NF}')  # to ascertain the no. of orbitals i.e. till d or f
 echo -e "\n Last column " $last_col
