@@ -1,6 +1,6 @@
 #!/bin/bash
 
-no_of_species=$(awk ' {if ( NR == 6 )  print NF }' POSCAR)        # To find the type and total no. of species or elements
+no_of_species=$(awk ' {if ( NR == 6 )  print NF }' POSCAR)        # To find the type and total no.of species or elements
 echo "The no. of species is : "$no_of_species
 
 # Creating the cif file from POSCAR
